@@ -292,6 +292,7 @@ $(() => {
             }
 
         }
+
         function postIsValid(title, url) {
             if (title === '') {
                 notify.showError('Title is required!');
@@ -305,6 +306,7 @@ $(() => {
 
             return false;
         }
+
         function calcTime(dateIsoFormat) {
             let diff = new Date - (new Date(dateIsoFormat));
             diff = Math.floor(diff / 60000);
@@ -318,6 +320,7 @@ $(() => {
             if (diff < 12) return diff + ' month' + pluralize(diff);
             diff = Math.floor(diff / 12);
             return diff + ' year' + pluralize(diff);
+
             function pluralize(value) {
                 if (value !== 1) return 's';
                 else return '';

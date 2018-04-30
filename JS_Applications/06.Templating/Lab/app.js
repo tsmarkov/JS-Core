@@ -1,3 +1,0 @@
-$(() => {
-  $('#main').load('template.html');
-})

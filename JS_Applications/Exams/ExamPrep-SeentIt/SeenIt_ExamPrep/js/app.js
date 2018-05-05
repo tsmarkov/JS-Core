@@ -1,105 +1,33 @@
 $(() => {
-    const HEADER = './templates/common/header.hbs';
-    const FOOTER = './templates/common/footer.hbs';
-    const NAVIGATION = './templates/common/navigation.hbs';
-
     const app = Sammy('#container', function () {
         this.use('Handlebars', 'hbs');
 
-        this.get("/", displayHome);
-        this.get("/index.html", displayHome);
+        this.get("#/welcome", postsHandler.displayHome);
+        this.get("/index.html", postsHandler.displayHome);
 
-        this.post("#/login", login);
+        this.post("#/login", authHandler.login);
 
-        this.post("#/register", register);
+        this.post("#/register", authHandler.register);
 
-        this.get("#/logout", logout);
+        this.get("#/logout", authHandler.logout);
 
-        this.get("#/catalog", displayCatalog);
+        this.get("#/catalog", postsHandler.displayCatalog);
 
-        function displayHome(ctx) {
-            if (auth.isAuth()) {
-                ctx.redirect('#/catalog');
-            } else {
-                ctx.loadPartials({
-                    header: HEADER,
-                    footer: FOOTER,
-                    loginForm: './templates/forms/loginForm.hbs',
-                    registerForm: './templates/forms/registerForm.hbs'
-                }).then(function () {
-                    this.partial('./templates/welcome.hbs')
-                }).catch(notify.handleError)
-            }
-        }
+        this.get("#/create/post", postsHandler.displayCreatePost);
+        this.post("#/create/post", postsHandler.createPost);
 
-        function login(ctx) {
-            let username = ctx.params.username;
-            let password = ctx.params.password;
+        this.get('#/edit/post/:id', postsHandler.displayEditPost);
+        this.post('#/edit/post', postsHandler.editPost);
 
-            auth.login(username, password)
-                .then(function (userData) {
-                    auth.saveSession(userData);
-                    notify.showInfo('Login successful');
-                    ctx.redirect('#/catalog');
-                })
-                .catch(function () {
-                    notify.showError('Login failed');
-                    ctx.redirect('/');
-                })
-        }
+        this.get('#/delete/post/:id', postsHandler.deletePost);
 
-        function register(ctx) {
-            let username = ctx.params.username;
-            let password = ctx.params.password;
-            let repeatPass = ctx.params.repeatPass;
+        this.get('#/my_posts', postsHandler.displayMyPosts);
 
-            if (password !== repeatPass) {
-                notify.showError('Passwords must match')
-            } else {
-                auth.register(username, password)
-                    .then(function () {
-                        auth.login(username, password)
-                            .then(function (userData) {
-                                auth.saveSession(userData);
-                                notify.showInfo('Registration successful');
-                                ctx.redirect('#/catalog');
-                            })
-                    })
-                    .catch(notify.handleError)
-            }
-        }
+        this.get('#/comments/:id', commentsHandler.displayComments);
 
-        function logout() {
-            auth.logout()
-                .then(function () {
-                    sessionStorage.clear();
-                    notify.showInfo('Logout successful');
-                })
-                .catch(function () {
-                    notify.showError('Logout failed');
-                    ctx.redirect('/');
-                })
-        }
+        this.post('#/create/comment', commentsHandler.createComment);
 
-        function displayCatalog(ctx) {
-            redirectAnonymous();
-
-            ctx.isAuth = auth.isAuth();
-
-            ctx.loadPartials({
-                header: HEADER,
-                footer: FOOTER,
-                navigation: NAVIGATION
-            }).then(function () {
-                ctx.partial('./partial/posts/catalog.hbs');
-            }).catch(notify.handleError)
-        }
-
-        function redirectAnonymous() {
-            if (!auth.isAuth()) {
-                ctx.redirect('/');
-            }
-        }
+        this.get('#/delete/comment/:id', commentsHandler.deleteComment);
     });
 
     app.run();

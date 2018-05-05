@@ -7,7 +7,7 @@ let remote = (() => {
         if (auth === 'basic') {
             return `Basic ${btoa(APP_KEY + ":" + APP_SECRET)}`;
         } else {
-            return `Kinvey ${sessionStorage.getItem('authtoken')}`
+            return `Kinvey ${sessionStorage.getItem('authtoken')}`;
         }
     }
 
@@ -22,7 +22,7 @@ let remote = (() => {
             headers: {
                 'Authorization': makeAuth(auth)
             }
-        }
+        };
     }
 
     function get (module, endpoint, auth) {
@@ -52,5 +52,5 @@ let remote = (() => {
         post,
         update,
         remove
-    }
+    };
 })();

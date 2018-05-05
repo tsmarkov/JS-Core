@@ -27,5 +27,5 @@ let notify = (() => {
         showInfo,
         showError,
         handleError
-    }
+    };
 })();

@@ -1,0 +1,13 @@
+{{>navigation}}
+<section id="viewCatalog" class="background-img">
+    <a href="#/add/flight" class="add-flight">Add Flight +</a>
+
+    <div class="added-flights">
+        {{#each flights}}
+            {{>addedFlight}}
+        {{else}}
+            <h1>No flights</h1>
+        {{/each}}
+    </div>
+</section>
+{{>footer}}
